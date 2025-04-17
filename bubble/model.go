@@ -12,6 +12,8 @@ type model struct {
 	cursor   int
 	selected map[int]struct{}
 	spinner  spinner.Model
+	request  string
+	loading  bool
 }
 
 func InitModel() model {
@@ -19,13 +21,15 @@ func InitModel() model {
 	s.Spinner = spinner.Dot
 	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 	return model{
-		choices:  []string{"All Tables", "All Users", "All Payments"},
-		queries:  []string{"tables", "users", "payments"},
+		choices:  []string{"All Tables", "All Users", "All Messages"},
+		queries:  []string{"tables", "users", "messages"},
 		selected: make(map[int]struct{}),
 		spinner:  s,
+		request:  "",
+		loading:  false,
 	}
 }
 
 func (m model) Init() tea.Cmd {
-	return tea.Batch(m.spinner.Tick)
+	return nil
 }

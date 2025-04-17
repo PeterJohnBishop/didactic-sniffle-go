@@ -4,59 +4,31 @@ import (
 	"fmt"
 )
 
-func QueryTables() string {
-	return "Finding all tables!"
-}
-
-func QueryUsers() string {
-	return "Finding all users!"
-}
-
-func QueryPayments() string {
-	return "Finding all payments!"
-}
+type respMsg string
 
 func (m model) View() string {
-	// The header
 	s := "Show:\n\n"
 
-	// Iterate over our choices
 	for i, choice := range m.choices {
-
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
+		cursor := " "
 		if m.cursor == i {
-			cursor = ">" // cursor!
+			cursor = ">"
 		}
 
-		// Is this choice selected?
-		checked := " " // not selected
+		checked := " "
 		if _, ok := m.selected[i]; ok {
-			checked = "x" // selected!
+			checked = "x"
 		}
 
-		getting := ""
-		if _, ok := m.selected[i]; ok {
-			switch m.queries[i] {
-			case "tables":
-				result := QueryTables()
-				getting = ("-> " + m.spinner.View() + result)
-			case "users":
-				result := QueryUsers()
-				getting = ("-> " + m.spinner.View() + result)
-			case "payments":
-				result := QueryPayments()
-				getting = ("-> " + m.spinner.View() + result)
-			}
-		} else {
-			getting = ""
-		}
-
-		s += fmt.Sprintf("%s [%s] %s %s\n", cursor, checked, choice, getting)
+		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
 	}
 
-	// The footer
-	s += "\nPress q to quit.\n"
+	if m.loading {
+		s += fmt.Sprintf("\n-> %s Querying database...\n", m.spinner.View())
+	} else if m.request != "" {
+		s += fmt.Sprintf("\n%s\n", m.request)
+	}
 
+	s += "\nPress q to quit.\n"
 	return s
 }
